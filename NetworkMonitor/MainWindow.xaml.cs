@@ -25,8 +25,6 @@ namespace NetworkMonitor
     /// </summary>
     public partial class MainWindow : Window
     {
-        private RegistryKey runKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-
         private double updateInterval = 1;
         private string pingAddress = "www.google.com";
         private bool pinging = false;
@@ -148,19 +146,6 @@ namespace NetworkMonitor
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             Close();
-        }
-
-        private void itmRunOnStartup_Checked(object sender, RoutedEventArgs e)
-        {
-            Debug.WriteLine("Adding startup key to system registry...");
-            Assembly curAssembly = Assembly.GetExecutingAssembly();
-            runKey.SetValue(curAssembly.GetName().Name, curAssembly.Location);
-        }
-
-        private void itmRunOnStartup_Unchecked(object sender, RoutedEventArgs e)
-        {
-            Debug.WriteLine("Removing startup key from system registry...");
-            runKey.DeleteValue(Assembly.GetExecutingAssembly().GetName().Name, false);
         }
     }
 }

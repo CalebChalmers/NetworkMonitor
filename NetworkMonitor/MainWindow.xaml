@@ -24,7 +24,6 @@
     <Window.ContextMenu>
         <ContextMenu>
             <MenuItem Header="_Close" Click="Close_Click"/>
-            <MenuItem x:Name="itmRunOnStartup" Header="_Run on startup" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=RunOnStartup, Mode=TwoWay}" IsCheckable="True" StaysOpenOnClick="True" Checked="itmRunOnStartup_Checked" Unchecked="itmRunOnStartup_Unchecked"/>
         </ContextMenu>
     </Window.ContextMenu>
 </Window>
