@@ -147,5 +147,15 @@ namespace NetworkMonitor
         {
             Close();
         }
+
+        private void TopMost_Checked(object sender, RoutedEventArgs e)
+        {
+            ShowInTaskbar = false;
+        }
+
+        private void TopMost_Unchecked(object sender, RoutedEventArgs e)
+        {
+            ShowInTaskbar = true;
+        }
     }
 }
