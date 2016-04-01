@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NetworkMonitor"
+        xmlns:properties="clr-namespace:NetworkMonitor.Properties"
         mc:Ignorable="d"
-        Title="Network Monitor" Height="75" Width="100" WindowStyle="None" Topmost="True" ShowInTaskbar="False" Closing="Window_Closing" Margin="0" MouseDown="Window_MouseDown">
+        Title="Network Monitor" Height="{Binding Source={x:Static properties:Settings.Default}, Path=Height, Mode=TwoWay}" Width="{Binding Source={x:Static properties:Settings.Default}, Path=Width, Mode=TwoWay}" Top="{Binding Source={x:Static properties:Settings.Default}, Path=Top, Mode=TwoWay}" Left="{Binding Source={x:Static properties:Settings.Default}, Path=Left, Mode=TwoWay}" WindowStyle="None" Topmost="True" ShowInTaskbar="False" Closing="Window_Closing" Margin="0" MouseDown="Window_MouseDown">
     <WrapPanel Orientation="Vertical" Margin="8,0,0,0">
         <StackPanel Margin="0" Orientation="Horizontal" ToolTip="Send (bps)">
             <TextBlock Text="▲" Width="14" FontSize="14" Margin="0" TextAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
@@ -23,6 +24,7 @@
     <Window.ContextMenu>
         <ContextMenu>
             <MenuItem Header="_Close" Click="Close_Click"/>
+            <MenuItem x:Name="itmRunOnStartup" Header="_Run on startup" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=RunOnStartup, Mode=TwoWay}" IsCheckable="True" StaysOpenOnClick="True" Checked="itmRunOnStartup_Checked" Unchecked="itmRunOnStartup_Unchecked"/>
         </ContextMenu>
     </Window.ContextMenu>
 </Window>

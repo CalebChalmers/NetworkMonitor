@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,6 +25,8 @@ namespace NetworkMonitor
     /// </summary>
     public partial class MainWindow : Window
     {
+        private RegistryKey runKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+
         private double updateInterval = 1;
         private string pingAddress = "www.google.com";
         private bool pinging = false;
@@ -129,6 +133,10 @@ namespace NetworkMonitor
                     Hide();
                 }
             }
+            else
+            {
+                Properties.Settings.Default.Save();
+            }
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -140,6 +148,19 @@ namespace NetworkMonitor
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void itmRunOnStartup_Checked(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("Adding startup key to system registry...");
+            Assembly curAssembly = Assembly.GetExecutingAssembly();
+            runKey.SetValue(curAssembly.GetName().Name, curAssembly.Location);
+        }
+
+        private void itmRunOnStartup_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("Removing startup key from system registry...");
+            runKey.DeleteValue(Assembly.GetExecutingAssembly().GetName().Name, false);
         }
     }
 }
