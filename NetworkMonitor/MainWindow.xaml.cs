@@ -32,12 +32,41 @@ namespace NetworkMonitor
         private long prevSent = 0L;
         private long prevReceived = 0L;
 
+        private NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
+        private NetworkInterface selectedInterface;
+
         private DispatcherTimer timer = new DispatcherTimer();
 
         public MainWindow()
         {
             InitializeComponent();
-            
+
+            if (interfaces.Length == 0)
+                return;
+
+            // Initialize selectedInterface and the Interface setting
+            if(Properties.Settings.Default.Interface == "")
+            {
+                Properties.Settings.Default.Interface = interfaces[0].Id;
+            }
+
+            selectedInterface = GetSelectedInterface();
+
+            // Fill interfaceSelect with interfaces
+            foreach (NetworkInterface ni in interfaces)
+            {
+                MenuItem menuItem = new MenuItem();
+                menuItem.Header = ni.Name;
+                menuItem.Tag = ni.Id;
+                menuItem.IsCheckable = true;
+                menuItem.IsChecked = (ni.Id == selectedInterface.Id);
+                menuItem.StaysOpenOnClick = true;
+                menuItem.Click += InterfaceSelect_Item_Click;
+
+                interfaceSelect.Items.Add(menuItem);
+            }
+
+            // Setup main timer
             timer.Interval = TimeSpan.FromSeconds(updateInterval);
             timer.Tick += Timer_Tick;
             Timer_Tick(null, null);
@@ -49,27 +78,19 @@ namespace NetworkMonitor
             if (!NetworkInterface.GetIsNetworkAvailable())
                 return;
 
-            NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
+            long sent = selectedInterface.GetIPv4Statistics().BytesSent * 8;
+            long received = selectedInterface.GetIPv4Statistics().BytesReceived * 8;
 
-            foreach (NetworkInterface ni in interfaces)
-            {
-                if(ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet && ni.Name == "Ethernet")
-                {
-                    long sent = ni.GetIPv4Statistics().BytesSent * 8;
-                    long received = ni.GetIPv4Statistics().BytesReceived * 8;
+            long sendSpeed = (long)((sent - prevSent) * (1.0 / updateInterval));
+            long receiveSpeed = (long)((received - prevReceived) * (1.0 / updateInterval));
 
-                    long sendSpeed = (long)((sent - prevSent) * (1.0 / updateInterval));
-                    long receiveSpeed = (long)((received - prevReceived) * (1.0 / updateInterval));
+            txt_send.Text = GetSpeedText(sendSpeed);
+            txt_receive.Text = GetSpeedText(receiveSpeed);
 
-                    txt_send.Text = GetSpeedText(sendSpeed);
-                    txt_receive.Text = GetSpeedText(receiveSpeed);
+            prevSent = sent;
+            prevReceived = received;
 
-                    prevSent = sent;
-                    prevReceived = received;
-
-                    Ping();
-                }
-            }
+            Ping();
         }
         
         private void Ping()
@@ -156,6 +177,24 @@ namespace NetworkMonitor
         private void TopMost_Unchecked(object sender, RoutedEventArgs e)
         {
             ShowInTaskbar = true;
+        }
+
+        private void InterfaceSelect_Item_Click(object sender, RoutedEventArgs e)
+        {
+            foreach(MenuItem item in interfaceSelect.Items)
+            {
+                item.IsChecked = false;
+            }
+
+            MenuItem clicked = (MenuItem)sender;
+            clicked.IsChecked = true;
+            Properties.Settings.Default.Interface = (string)clicked.Tag;
+            selectedInterface = GetSelectedInterface();
+        }
+
+        private NetworkInterface GetSelectedInterface()
+        {
+            return interfaces.Where(i => i.Id == Properties.Settings.Default.Interface).First();
         }
     }
 }

@@ -24,7 +24,8 @@
     <Window.ContextMenu>
         <ContextMenu>
             <MenuItem Header="_Close" Click="Close_Click"/>
-            <MenuItem Header="_Topmost" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=TopMost, Mode=TwoWay}" Unchecked="TopMost_Unchecked" Checked="TopMost_Checked"/>
+            <MenuItem Header="_Topmost" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=TopMost, Mode=TwoWay}" Unchecked="TopMost_Unchecked" Checked="TopMost_Checked" StaysOpenOnClick="True"/>
+            <MenuItem x:Name="interfaceSelect" Header="_Interface"/>
         </ContextMenu>
     </Window.ContextMenu>
 </Window>

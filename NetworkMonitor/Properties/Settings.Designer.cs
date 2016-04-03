@@ -82,5 +82,17 @@ namespace NetworkMonitor.Properties {
                 this["TopMost"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Interface {
+            get {
+                return ((string)(this["Interface"]));
+            }
+            set {
+                this["Interface"] = value;
+            }
+        }
     }
 }
