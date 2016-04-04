@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using NetworkMonitor.Properties;
 
 namespace NetworkMonitor
 {
@@ -45,9 +46,9 @@ namespace NetworkMonitor
                 return;
 
             // Initialize selectedInterface and the Interface setting
-            if(Properties.Settings.Default.Interface == "")
+            if(Settings.Default.Interface == "")
             {
-                Properties.Settings.Default.Interface = interfaces[0].Id;
+                Settings.Default.Interface = interfaces[0].Id;
             }
 
             selectedInterface = GetSelectedInterface();
@@ -75,22 +76,33 @@ namespace NetworkMonitor
 
         private void Timer_Tick(object sender, EventArgs args)
         {
-            if (!NetworkInterface.GetIsNetworkAvailable())
-                return;
+            IPv4InterfaceStatistics stats = null;
 
-            long sent = selectedInterface.GetIPv4Statistics().BytesSent * 8;
-            long received = selectedInterface.GetIPv4Statistics().BytesReceived * 8;
+            if (Settings.Default.Stat_Send || Settings.Default.Stat_Receive)
+            {
+                stats = selectedInterface.GetIPv4Statistics();
+            }
 
-            long sendSpeed = (long)((sent - prevSent) * (1.0 / updateInterval));
-            long receiveSpeed = (long)((received - prevReceived) * (1.0 / updateInterval));
+            if (Settings.Default.Stat_Send)
+            {
+                long sent = stats.BytesSent * 8;
+                long sendSpeed = (long)((sent - prevSent) * (1.0 / updateInterval));
+                txt_send.Text = GetSpeedText(sendSpeed);
+                prevSent = sent;
+            }
 
-            txt_send.Text = GetSpeedText(sendSpeed);
-            txt_receive.Text = GetSpeedText(receiveSpeed);
+            if (Settings.Default.Stat_Receive)
+            {
+                long received = stats.BytesReceived * 8;
+                long receiveSpeed = (long)((received - prevReceived) * (1.0 / updateInterval));
+                txt_receive.Text = GetSpeedText(receiveSpeed);
+                prevReceived = received;
+            }
 
-            prevSent = sent;
-            prevReceived = received;
-
-            Ping();
+            if (Settings.Default.Stat_Ping)
+            {
+                Ping();
+            }
         }
         
         private void Ping()
@@ -107,7 +119,7 @@ namespace NetworkMonitor
             }
             catch (PingException)
             {
-                // Discard PingExceptions and return false;
+                // Discard PingExceptions;
             }
         }
 
@@ -154,7 +166,7 @@ namespace NetworkMonitor
             }
             else
             {
-                Properties.Settings.Default.Save();
+                Settings.Default.Save();
             }
         }
 
@@ -188,13 +200,13 @@ namespace NetworkMonitor
 
             MenuItem clicked = (MenuItem)sender;
             clicked.IsChecked = true;
-            Properties.Settings.Default.Interface = (string)clicked.Tag;
+            Settings.Default.Interface = (string)clicked.Tag;
             selectedInterface = GetSelectedInterface();
         }
 
         private NetworkInterface GetSelectedInterface()
         {
-            return interfaces.Where(i => i.Id == Properties.Settings.Default.Interface).First();
+            return interfaces.Where(i => i.Id == Settings.Default.Interface).First();
         }
     }
 }

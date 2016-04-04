@@ -8,15 +8,18 @@
         mc:Ignorable="d"
         Title="Network Monitor" Height="{Binding Source={x:Static properties:Settings.Default}, Path=Height, Mode=TwoWay}" Width="{Binding Source={x:Static properties:Settings.Default}, Path=Width, Mode=TwoWay}" Top="{Binding Source={x:Static properties:Settings.Default}, Path=Top, Mode=TwoWay}" Left="{Binding Source={x:Static properties:Settings.Default}, Path=Left, Mode=TwoWay}" WindowStyle="None" Topmost="{Binding Source={x:Static properties:Settings.Default}, Path=TopMost}" ShowInTaskbar="False" Closing="Window_Closing" Margin="0" MouseDown="Window_MouseDown">
     <WrapPanel Orientation="Vertical" Margin="8,0,0,0">
-        <StackPanel Margin="0" Orientation="Horizontal" ToolTip="Send (bps)">
+        <WrapPanel.Resources>
+            <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        </WrapPanel.Resources>
+        <StackPanel Margin="0" Orientation="Horizontal" ToolTip="Send (bps)" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Send, Converter={StaticResource BoolToVisibility}}">
             <TextBlock Text="▲" Width="14" FontSize="14" Margin="0" TextAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
             <TextBlock x:Name="txt_send" Text="" FontSize="14" Margin="6,0"/>
         </StackPanel>
-        <StackPanel Margin="0" Orientation="Horizontal" ToolTip="Receive (bps)">
+        <StackPanel Margin="0" Orientation="Horizontal" ToolTip="Receive (bps)" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Receive, Converter={StaticResource BoolToVisibility}}">
             <TextBlock Text="▼" Width="14" FontSize="14" Margin="0" TextAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
             <TextBlock x:Name="txt_receive" Text="" FontSize="14" Margin="6,0"/>
         </StackPanel>
-        <StackPanel Margin="0" Orientation="Horizontal" ToolTip="Ping (ms)">
+        <StackPanel Margin="0" Orientation="Horizontal" ToolTip="Ping (ms)" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Ping, Converter={StaticResource BoolToVisibility}}">
             <TextBlock Text="●" Width="14" FontSize="14" Margin="0" TextAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
             <TextBlock x:Name="txt_ping" Text="" FontSize="14" Margin="6,0"/>
         </StackPanel>
@@ -26,6 +29,11 @@
             <MenuItem Header="_Close" Click="Close_Click"/>
             <MenuItem Header="_Topmost" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=TopMost, Mode=TwoWay}" Unchecked="TopMost_Unchecked" Checked="TopMost_Checked" StaysOpenOnClick="True"/>
             <MenuItem x:Name="interfaceSelect" Header="_Interface"/>
+            <MenuItem Header="_Statistics">
+                <MenuItem Header="_Send" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Send, Mode=TwoWay}" StaysOpenOnClick="True"/>
+                <MenuItem Header="_Receive" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Receive, Mode=TwoWay}" StaysOpenOnClick="True"/>
+                <MenuItem Header="_Ping" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Ping, Mode=TwoWay}" StaysOpenOnClick="True"/>
+            </MenuItem>
         </ContextMenu>
     </Window.ContextMenu>
 </Window>

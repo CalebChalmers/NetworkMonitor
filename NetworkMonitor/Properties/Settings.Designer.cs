@@ -94,5 +94,41 @@ namespace NetworkMonitor.Properties {
                 this["Interface"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Stat_Send {
+            get {
+                return ((bool)(this["Stat_Send"]));
+            }
+            set {
+                this["Stat_Send"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Stat_Receive {
+            get {
+                return ((bool)(this["Stat_Receive"]));
+            }
+            set {
+                this["Stat_Receive"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Stat_Ping {
+            get {
+                return ((bool)(this["Stat_Ping"]));
+            }
+            set {
+                this["Stat_Ping"] = value;
+            }
+        }
     }
 }
