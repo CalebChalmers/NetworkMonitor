@@ -121,10 +121,12 @@ namespace NetworkMonitor.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool Stat_Ping {
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
+            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
+            "tring>https://www.google.com/</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection Stat_Ping {
             get {
-                return ((bool)(this["Stat_Ping"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["Stat_Ping"]));
             }
             set {
                 this["Stat_Ping"] = value;

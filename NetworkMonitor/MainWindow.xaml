@@ -6,8 +6,10 @@
         xmlns:local="clr-namespace:NetworkMonitor"
         xmlns:properties="clr-namespace:NetworkMonitor.Properties"
         mc:Ignorable="d"
-        Title="Network Monitor" Height="{Binding Source={x:Static properties:Settings.Default}, Path=Height, Mode=TwoWay}" Width="{Binding Source={x:Static properties:Settings.Default}, Path=Width, Mode=TwoWay}" Top="{Binding Source={x:Static properties:Settings.Default}, Path=Top, Mode=TwoWay}" Left="{Binding Source={x:Static properties:Settings.Default}, Path=Left, Mode=TwoWay}" WindowStyle="None" Topmost="{Binding Source={x:Static properties:Settings.Default}, Path=TopMost}" ShowInTaskbar="False" Closing="Window_Closing" Margin="0" MouseDown="Window_MouseDown">
-    <WrapPanel Orientation="Vertical" Margin="8,0,0,0">
+        Title="Network Monitor" Height="{Binding Source={x:Static properties:Settings.Default}, Path=Height, Mode=TwoWay}" Width="{Binding Source={x:Static properties:Settings.Default}, Path=Width, Mode=TwoWay}" Top="{Binding Source={x:Static properties:Settings.Default}, Path=Top, Mode=TwoWay}" Left="{Binding Source={x:Static properties:Settings.Default}, Path=Left, Mode=TwoWay}" Topmost="{Binding Source={x:Static properties:Settings.Default}, Path=TopMost}" ShowInTaskbar="False" Closing="Window_Closing" Margin="0" MouseDown="Window_MouseDown" Background="White" BorderThickness="0" BorderBrush="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" WindowStyle="None" Loaded="Window_Loaded">
+    <Window.Resources>
+    </Window.Resources>
+    <WrapPanel x:Name="statPanel" Orientation="Vertical" Margin="8,0,0,0">
         <WrapPanel.Resources>
             <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
         </WrapPanel.Resources>
@@ -19,10 +21,6 @@
             <TextBlock Text="▼" Width="14" FontSize="14" Margin="0" TextAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
             <TextBlock x:Name="txt_receive" Text="" FontSize="14" Margin="6,0"/>
         </StackPanel>
-        <StackPanel Margin="0" Orientation="Horizontal" ToolTip="Ping (ms)" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Ping, Converter={StaticResource BoolToVisibility}}">
-            <TextBlock Text="●" Width="14" FontSize="14" Margin="0" TextAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-            <TextBlock x:Name="txt_ping" Text="" FontSize="14" Margin="6,0"/>
-        </StackPanel>
     </WrapPanel>
     <Window.ContextMenu>
         <ContextMenu>
@@ -32,8 +30,28 @@
             <MenuItem Header="_Statistics">
                 <MenuItem Header="_Send" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Send, Mode=TwoWay}" StaysOpenOnClick="True"/>
                 <MenuItem Header="_Receive" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Receive, Mode=TwoWay}" StaysOpenOnClick="True"/>
-                <MenuItem Header="_Ping" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Ping, Mode=TwoWay}" StaysOpenOnClick="True"/>
+                <MenuItem Header="_Ping..." Click="PingMenuItem_Click" />
             </MenuItem>
         </ContextMenu>
     </Window.ContextMenu>
+    <!--
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="MouseEnter">
+            <BeginStoryboard>
+                <Storyboard>
+                    <ColorAnimation To="#02FFFFFF" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" />
+                    <DoubleAnimation To="0.75" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="MouseLeave">
+            <BeginStoryboard>
+                <Storyboard>
+                    <ColorAnimation To="White" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" />
+                    <DoubleAnimation To="1" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+    -->
 </Window>

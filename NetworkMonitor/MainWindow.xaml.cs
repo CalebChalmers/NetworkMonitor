@@ -18,6 +18,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using NetworkMonitor.Properties;
+using System.Windows.Interop;
+using System.Windows.Media.Animation;
+using System.Net;
 
 namespace NetworkMonitor
 {
@@ -27,9 +30,7 @@ namespace NetworkMonitor
     public partial class MainWindow : Window
     {
         private double updateInterval = 1;
-        private string pingAddress = "www.google.com";
-        private bool pinging = false;
-        private bool autoExit = false;
+        private bool closing = false;
         private long prevSent = 0L;
         private long prevReceived = 0L;
 
@@ -37,6 +38,8 @@ namespace NetworkMonitor
         private NetworkInterface selectedInterface;
 
         private DispatcherTimer timer = new DispatcherTimer();
+
+        private List<PingPanel> pingPanels = new List<PingPanel>();
 
         public MainWindow()
         {
@@ -67,11 +70,32 @@ namespace NetworkMonitor
                 interfaceSelect.Items.Add(menuItem);
             }
 
+            foreach (string url in Settings.Default.Stat_Ping)
+            {
+                CreatePingPanel(url);
+            }
+
             // Setup main timer
             timer.Interval = TimeSpan.FromSeconds(updateInterval);
             timer.Tick += Timer_Tick;
             Timer_Tick(null, null);
             timer.Start();
+        }
+
+        private void PingPanel_PingCompleted(object sender, PingCompletedEventArgs e)
+        {
+            if (closing)
+            {
+                Close();
+            }
+        }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            for(int i = 0; i < pingPanels.Count; i++)
+            {
+                pingPanels[i].Icon = await GetWebsiteIcon(Settings.Default.Stat_Ping[i]);
+            }
         }
 
         private void Timer_Tick(object sender, EventArgs args)
@@ -98,43 +122,10 @@ namespace NetworkMonitor
                 txt_receive.Text = GetSpeedText(receiveSpeed);
                 prevReceived = received;
             }
-
-            if (Settings.Default.Stat_Ping)
+            
+            for (int i = 0; i < pingPanels.Count; i++)
             {
-                Ping();
-            }
-        }
-        
-        private void Ping()
-        {
-            Ping pinger = new Ping();
-            pinger.PingCompleted += Ping_PingCompleted;
-            try
-            {
-                if (!pinging)
-                {
-                    pinger.SendAsync(pingAddress, null);
-                    pinging = true;
-                }
-            }
-            catch (PingException)
-            {
-                // Discard PingExceptions;
-            }
-        }
-
-        private void Ping_PingCompleted(object sender, PingCompletedEventArgs e)
-        {
-            pinging = false;
-
-            if (e.Reply.Status == IPStatus.Success)
-            {
-                txt_ping.Text = e.Reply.RoundtripTime.ToString();
-            }
-
-            if (autoExit)
-            {
-                Close();
+                pingPanels[i].Ping();
             }
         }
 
@@ -143,7 +134,7 @@ namespace NetworkMonitor
             var ordinals = new[] { "", "K", "M", "G", "T", "P", "E" };
             var ordinal = 0;
 
-            while (bitsPerSecond > 1024)
+            while (bitsPerSecond >= 1024)
             {
                 bitsPerSecond /= 1024;
                 ordinal++;
@@ -154,12 +145,21 @@ namespace NetworkMonitor
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            bool pinging = false;
+            foreach(PingPanel pingPanel in pingPanels)
+            {
+                if(pingPanel.IsPinging)
+                {
+                    pinging = true;
+                }
+            }
+
             if (pinging)
             {
                 e.Cancel = true;
-                if (!autoExit)
+                if (!closing)
                 {
-                    autoExit = true;
+                    closing = true;
                     timer.Stop();
                     Hide();
                 }
@@ -207,6 +207,54 @@ namespace NetworkMonitor
         private NetworkInterface GetSelectedInterface()
         {
             return interfaces.Where(i => i.Id == Settings.Default.Interface).First();
+        }
+
+        private async Task<BitmapImage> GetWebsiteIcon(string url)
+        {
+            WebClient client = new WebClient();
+
+            WebRequest request = WebRequest.Create("http://www.google.com/s2/favicons?domain_url=" + url);
+            WebResponse response = await request.GetResponseAsync();
+            using (System.IO.Stream stream = response.GetResponseStream())
+            {
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.StreamSource = stream;
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+                Debug.WriteLine(bitmap == null);
+                return bitmap;
+            }
+        }
+
+        private PingPanel CreatePingPanel(string url)
+        {
+            PingPanel pingPanel = new PingPanel();
+            pingPanel.Hostname = new Uri(url).Host;
+            pingPanel.PingCompleted += PingPanel_PingCompleted;
+            pingPanels.Add(pingPanel);
+            statPanel.Children.Add(pingPanel);
+            return pingPanel;
+        }
+
+        private void PingMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            PingWindow window = new PingWindow();
+
+            window.URLAdded += async (url) =>
+            {
+                PingPanel pingPanel = CreatePingPanel(url);
+                pingPanel.Icon = await GetWebsiteIcon(url);
+            };
+
+            window.URLRemoved += (i) =>
+            {
+                statPanel.Children.Remove(pingPanels[i]);
+                pingPanels.RemoveAt(i);
+            };
+
+            window.Owner = this;
+            window.ShowDialog();
         }
     }
 }
