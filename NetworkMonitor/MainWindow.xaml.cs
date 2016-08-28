@@ -211,19 +211,25 @@ namespace NetworkMonitor
 
         private async Task<BitmapImage> GetWebsiteIcon(string url)
         {
-            WebClient client = new WebClient();
-
-            WebRequest request = WebRequest.Create("http://www.google.com/s2/favicons?domain_url=" + url);
-            WebResponse response = await request.GetResponseAsync();
-            using (System.IO.Stream stream = response.GetResponseStream())
+            try
             {
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.StreamSource = stream;
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.EndInit();
-                Debug.WriteLine(bitmap == null);
-                return bitmap;
+                WebClient client = new WebClient();
+                WebRequest request = WebRequest.Create("http://www.google.com/s2/favicons?domain_url=" + url);
+                WebResponse response = await request.GetResponseAsync();
+                using (System.IO.Stream stream = response.GetResponseStream())
+                {
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.StreamSource = stream;
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.EndInit();
+                    Debug.WriteLine(bitmap == null);
+                    return bitmap;
+                }
+            }
+            catch (WebException)
+            {
+                return null;
             }
         }
 
