@@ -7,11 +7,8 @@
         xmlns:properties="clr-namespace:NetworkMonitor.Properties"
         mc:Ignorable="d"
         Title="Network Monitor" Height="{Binding Source={x:Static properties:Settings.Default}, Path=Height, Mode=TwoWay}" Width="{Binding Source={x:Static properties:Settings.Default}, Path=Width, Mode=TwoWay}" Top="{Binding Source={x:Static properties:Settings.Default}, Path=Top, Mode=TwoWay}" Left="{Binding Source={x:Static properties:Settings.Default}, Path=Left, Mode=TwoWay}" Topmost="{Binding Source={x:Static properties:Settings.Default}, Path=TopMost}" ShowInTaskbar="False" Closing="Window_Closing" Margin="0" MouseDown="Window_MouseDown" Background="White" BorderThickness="0" BorderBrush="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" WindowStyle="None" Loaded="Window_Loaded" AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
-    <Window.Resources>
-    </Window.Resources>
     <WrapPanel x:Name="statPanel" Orientation="Vertical" Margin="8,6,0,6">
         <WrapPanel.Resources>
-            <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
             <Style TargetType="StackPanel">
                 <Setter Property="Margin" Value="0"/>
                 <Setter Property="Orientation" Value="Horizontal"/>
