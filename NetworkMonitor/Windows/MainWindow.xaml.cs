@@ -21,6 +21,8 @@ using NetworkMonitor.Properties;
 using System.Windows.Interop;
 using System.Windows.Media.Animation;
 using System.Net;
+using GalaSoft.MvvmLight.Messaging;
+using NetworkMonitor.ViewModels;
 
 namespace NetworkMonitor.Windows
 {
@@ -29,111 +31,17 @@ namespace NetworkMonitor.Windows
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const double updateInterval = 1;
-        
-        private bool isPinging = false;
-        private long prevSent = 0L;
-        private long prevReceived = 0L;
-
-        private NetworkInterface[] netInterfaces;
-        private NetworkInterface netInterface;
-
-        private DispatcherTimer timer = new DispatcherTimer();
-
         public MainWindow()
         {
+            Messenger.Default.Register<string>(this, "fatal error", FatalError);
+            
             InitializeComponent();
-
-            netInterfaces = NetworkInterface.GetAllNetworkInterfaces();
-
-            if (netInterfaces.Length == 0)
-            {
-                Close();
-                return;
-            }
-
-            // Initialize the selected interface and the Interface setting
-            if(Settings.Default.Interface == "")
-            {
-                netInterface = netInterfaces[0];
-                Settings.Default.Interface = netInterface.Id;
-            }
-            else
-            {
-                netInterface = GetSelectedInterface();
-            }
-
-            // Fill interfaceSelect with interfaces
-            foreach (NetworkInterface ni in netInterfaces)
-            {
-                MenuItem menuItem = new MenuItem();
-                menuItem.Header = ni.Name;
-                menuItem.Tag = ni.Id;
-                menuItem.ToolTip = ni.Description;
-                menuItem.IsChecked = (ni.Id == netInterface.Id);
-                menuItem.Click += InterfaceSelect_Item_Click;
-                menuItem.IsCheckable = true;
-                menuItem.StaysOpenOnClick = true;
-
-                interfaceSelect.Items.Add(menuItem);
-            }
-
-            UpdateStats();
-
-            // Setup main timer
-            timer.Interval = TimeSpan.FromSeconds(updateInterval);
-            timer.Tick += Timer_Tick;
-            timer.Start();
         }
 
-        private void Timer_Tick(object sender, EventArgs args)
+        private void FatalError(string msg)
         {
-            UpdateStats();
-        }
-
-        private void UpdateStats()
-        {
-            IPv4InterfaceStatistics stats = null;
-
-            if (Settings.Default.Stat_Send || Settings.Default.Stat_Receive)
-            {
-                stats = netInterface.GetIPv4Statistics();
-
-                if (Settings.Default.Stat_Send)
-                {
-                    long sent = stats.BytesSent * 8;
-                    double sendSpeed = (sent - prevSent) / updateInterval;
-                    txt_send.Text = GetSpeedText(sendSpeed);
-                    prevSent = sent;
-                }
-
-                if (Settings.Default.Stat_Receive)
-                {
-                    long received = stats.BytesReceived * 8;
-                    double receiveSpeed = (received - prevReceived) / updateInterval;
-                    txt_receive.Text = GetSpeedText(receiveSpeed);
-                    prevReceived = received;
-                }
-            }
-
-            if(Settings.Default.Stat_Ping)
-            {
-                Ping();
-            }
-        }
-
-        private string GetSpeedText(double bitsPerSecond)
-        {
-            var ordinals = new[] { "", "K", "M", "G", "T", "P", "E" };
-            var ordinal = 0;
-
-            while (bitsPerSecond >= 1024)
-            {
-                bitsPerSecond /= 1024;
-                ordinal++;
-            }
-
-            return String.Format("{0}{1}", bitsPerSecond.ToString("#.#"), ordinals[ordinal]);
+            MessageBox.Show("ERROR: " + msg, "Network Monitor", MessageBoxButton.OK, MessageBoxImage.Error);
+            Close();
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -145,60 +53,6 @@ namespace NetworkMonitor.Windows
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             Close();
-        }
-
-        private void InterfaceSelect_Item_Click(object sender, RoutedEventArgs e)
-        {
-            foreach(MenuItem item in interfaceSelect.Items)
-            {
-                item.IsChecked = false;
-            }
-
-            MenuItem clicked = (MenuItem)sender;
-            clicked.IsChecked = true;
-            Settings.Default.Interface = (string)clicked.Tag;
-            netInterface = GetSelectedInterface();
-        }
-
-        private NetworkInterface GetSelectedInterface()
-        {
-            return netInterfaces.FirstOrDefault(i => i.Id == Settings.Default.Interface) ?? netInterfaces[0];
-        }
-
-        private void Ping()
-        {
-            if (isPinging) return;
-            Ping pinger = new Ping();
-            pinger.PingCompleted += Ping_PingCompleted;
-            try
-            {
-                isPinging = true;
-                pinger.SendAsync(Settings.Default.PingAddress, null);
-            }
-            catch (PingException)
-            {
-                isPinging = false;
-                PingError();
-            }
-        }
-
-        private void Ping_PingCompleted(object sender, PingCompletedEventArgs e)
-        {
-            isPinging = false;
-
-            if (e.Reply != null && e.Reply.Status == IPStatus.Success)
-            {
-                txt_ping.Text = e.Reply.RoundtripTime.ToString();
-            }
-            else
-            {
-                PingError();
-            }
-        }
-
-        private void PingError()
-        {
-            txt_ping.Text = "---";
         }
 
         private void PingMenuItem_Click(object sender, RoutedEventArgs e)
