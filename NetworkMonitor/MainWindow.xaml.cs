@@ -31,6 +31,7 @@ namespace NetworkMonitor
     {
         private double updateInterval = 1;
         private bool closing = false;
+        private bool isPinging = false;
         private long prevSent = 0L;
         private long prevReceived = 0L;
 
@@ -38,8 +39,6 @@ namespace NetworkMonitor
         private NetworkInterface selectedInterface;
 
         private DispatcherTimer timer = new DispatcherTimer();
-
-        private List<PingPanel> pingPanels = new List<PingPanel>();
 
         public MainWindow()
         {
@@ -70,10 +69,6 @@ namespace NetworkMonitor
                 interfaceSelect.Items.Add(menuItem);
             }
 
-            foreach (string url in Settings.Default.Stat_Ping)
-            {
-                CreatePingPanel(url);
-            }
 
             // Setup main timer
             timer.Interval = TimeSpan.FromSeconds(updateInterval);
@@ -82,20 +77,8 @@ namespace NetworkMonitor
             timer.Start();
         }
 
-        private void PingPanel_PingCompleted(object sender, PingCompletedEventArgs e)
-        {
-            if (closing)
-            {
-                Close();
-            }
-        }
-
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            for(int i = 0; i < pingPanels.Count; i++)
-            {
-                pingPanels[i].Icon = await GetWebsiteIcon(Settings.Default.Stat_Ping[i]);
-            }
         }
 
         private void Timer_Tick(object sender, EventArgs args)
@@ -122,10 +105,10 @@ namespace NetworkMonitor
                 txt_receive.Text = GetSpeedText(receiveSpeed);
                 prevReceived = received;
             }
-            
-            for (int i = 0; i < pingPanels.Count; i++)
+
+            if(Settings.Default.Stat_Ping)
             {
-                pingPanels[i].Ping();
+                Ping();
             }
         }
 
@@ -209,56 +192,45 @@ namespace NetworkMonitor
             return interfaces.Where(i => i.Id == Settings.Default.Interface).First();
         }
 
-        private async Task<BitmapImage> GetWebsiteIcon(string url)
+        private void Ping()
         {
+            if (isPinging) return;
+            Ping pinger = new Ping();
+            pinger.PingCompleted += Ping_PingCompleted;
             try
             {
-                WebClient client = new WebClient();
-                WebRequest request = WebRequest.Create("http://www.google.com/s2/favicons?domain_url=" + url);
-                WebResponse response = await request.GetResponseAsync();
-                using (System.IO.Stream stream = response.GetResponseStream())
-                {
-                    BitmapImage bitmap = new BitmapImage();
-                    bitmap.BeginInit();
-                    bitmap.StreamSource = stream;
-                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmap.EndInit();
-                    Debug.WriteLine(bitmap == null);
-                    return bitmap;
-                }
+                isPinging = true;
+                pinger.SendAsync(Settings.Default.PingAddress, null);
             }
-            catch (WebException)
+            catch (PingException)
             {
-                return null;
+                isPinging = false;
+                PingError();
             }
         }
 
-        private PingPanel CreatePingPanel(string url)
+        private void Ping_PingCompleted(object sender, PingCompletedEventArgs e)
         {
-            PingPanel pingPanel = new PingPanel();
-            pingPanel.Hostname = new Uri(url).Host;
-            pingPanel.PingCompleted += PingPanel_PingCompleted;
-            pingPanels.Add(pingPanel);
-            statPanel.Children.Add(pingPanel);
-            return pingPanel;
+            isPinging = false;
+
+            if (e.Reply != null && e.Reply.Status == IPStatus.Success)
+            {
+                txt_ping.Text = e.Reply.RoundtripTime.ToString();
+            }
+            else
+            {
+                PingError();
+            }
+        }
+
+        private void PingError()
+        {
+            txt_ping.Text = "---";
         }
 
         private void PingMenuItem_Click(object sender, RoutedEventArgs e)
         {
             PingWindow window = new PingWindow();
-
-            window.URLAdded += async (url) =>
-            {
-                PingPanel pingPanel = CreatePingPanel(url);
-                pingPanel.Icon = await GetWebsiteIcon(url);
-            };
-
-            window.URLRemoved += (i) =>
-            {
-                statPanel.Children.Remove(pingPanels[i]);
-                pingPanels.RemoveAt(i);
-            };
-
             window.Owner = this;
             window.ShowDialog();
         }

@@ -6,25 +6,9 @@
         xmlns:local="clr-namespace:NetworkMonitor"
         xmlns:properties="clr-namespace:NetworkMonitor.Properties"
         mc:Ignorable="d"
-        Title="Ping" Height="160" Width="300" WindowStyle="ToolWindow" WindowStartupLocation="CenterScreen">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="30"/>
-        </Grid.RowDefinitions>
-        <ListBox x:Name="lbx_addresses">
-        </ListBox>
-        <TextBox x:Name="tbx_address" Grid.Row="1" MaxLines="1">
-            
-        </TextBox>
-        <Grid DockPanel.Dock="Right" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Button x:Name="btn_add" Margin="4" Content="Add" Grid.Column="0" Click="btn_add_Click"/>
-            <Button x:Name="btn_remove" Margin="4" Content="Remove" Grid.Column="1" Click="btn_remove_Click" IsEnabled="False"/>
-        </Grid>
-    </Grid>
+        Title="Ping" Height="90" Width="200" WindowStartupLocation="CenterScreen" SizeToContent="Height" ResizeMode="NoResize" WindowStyle="ToolWindow">
+    <StackPanel Margin="5">
+        <CheckBox x:Name="chk_enabled" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="5,3" Content="Enabled" IsChecked="{Binding Stat_Ping, Source={x:Static properties:Settings.Default}, Mode=TwoWay}"/>
+        <TextBox x:Name="tbx_address" Grid.Row="1" MaxLines="1" Margin="2" Padding="2" IsEnabled="{Binding IsChecked, ElementName=chk_enabled}" Text="{Binding PingAddress, Source={x:Static properties:Settings.Default}, Mode=TwoWay}"/>
+    </StackPanel>
 </Window>

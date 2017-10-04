@@ -36,6 +36,9 @@
             <TextBlock Text="▼" Style="{StaticResource IconTextBlockStyle}"/>
             <TextBlock x:Name="txt_receive" Style="{StaticResource InfoTextBlockStyle}"/>
         </StackPanel>
+        <StackPanel ToolTip="Ping (ms)" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Ping, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Text="●" Style="{StaticResource IconTextBlockStyle}"/>
+            <TextBlock x:Name="txt_ping" Style="{StaticResource InfoTextBlockStyle}"/>
         </StackPanel>
     </WrapPanel>
     <Window.ContextMenu>
@@ -46,7 +49,7 @@
             <MenuItem Header="_Statistics">
                 <MenuItem Header="_Send" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Send, Mode=TwoWay}" StaysOpenOnClick="True"/>
                 <MenuItem Header="_Receive" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Receive, Mode=TwoWay}" StaysOpenOnClick="True"/>
-                <MenuItem Header="_Ping..." Click="PingMenuItem_Click" />
+                <MenuItem Header="_Ping..." Click="PingMenuItem_Click"/>
             </MenuItem>
         </ContextMenu>
     </Window.ContextMenu>
