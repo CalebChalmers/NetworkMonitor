@@ -77,11 +77,10 @@ namespace NetworkMonitor
             timer.Start();
         }
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        private void Timer_Tick(object sender, EventArgs args)
         {
         }
 
-        private void Timer_Tick(object sender, EventArgs args)
         {
             IPv4InterfaceStatistics stats = null;
 
@@ -126,33 +125,6 @@ namespace NetworkMonitor
             return String.Format("{0}{1}", bitsPerSecond.ToString("#.#"), ordinals[ordinal]);
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            bool pinging = false;
-            foreach(PingPanel pingPanel in pingPanels)
-            {
-                if(pingPanel.IsPinging)
-                {
-                    pinging = true;
-                }
-            }
-
-            if (pinging)
-            {
-                e.Cancel = true;
-                if (!closing)
-                {
-                    closing = true;
-                    timer.Stop();
-                    Hide();
-                }
-            }
-            else
-            {
-                Settings.Default.Save();
-            }
-        }
-
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -162,16 +134,6 @@ namespace NetworkMonitor
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             Close();
-        }
-
-        private void TopMost_Checked(object sender, RoutedEventArgs e)
-        {
-            ShowInTaskbar = false;
-        }
-
-        private void TopMost_Unchecked(object sender, RoutedEventArgs e)
-        {
-            ShowInTaskbar = true;
         }
 
         private void InterfaceSelect_Item_Click(object sender, RoutedEventArgs e)

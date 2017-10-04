@@ -6,7 +6,21 @@
         xmlns:local="clr-namespace:NetworkMonitor"
         xmlns:properties="clr-namespace:NetworkMonitor.Properties"
         mc:Ignorable="d"
-        Title="Network Monitor" Height="{Binding Source={x:Static properties:Settings.Default}, Path=Height, Mode=TwoWay}" Width="{Binding Source={x:Static properties:Settings.Default}, Path=Width, Mode=TwoWay}" Top="{Binding Source={x:Static properties:Settings.Default}, Path=Top, Mode=TwoWay}" Left="{Binding Source={x:Static properties:Settings.Default}, Path=Left, Mode=TwoWay}" Topmost="{Binding Source={x:Static properties:Settings.Default}, Path=TopMost}" ShowInTaskbar="False" Closing="Window_Closing" Margin="0" MouseDown="Window_MouseDown" Background="White" BorderThickness="0" BorderBrush="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" WindowStyle="None" Loaded="Window_Loaded" AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
+        Height="{Binding Height, Source={x:Static properties:Settings.Default}, Mode=TwoWay}"
+        Width="{Binding Width, Source={x:Static properties:Settings.Default}, Mode=TwoWay}"
+        Top="{Binding Top, Source={x:Static properties:Settings.Default}, Mode=TwoWay}"
+        Left="{Binding Left, Source={x:Static properties:Settings.Default}, Mode=TwoWay}"
+        Topmost="{Binding TopMost, Source={x:Static properties:Settings.Default}, Mode=OneWay}"
+        ShowInTaskbar="{Binding IsChecked, ElementName=topMostToggle, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"
+        Title="Network Monitor"
+        Margin="0"
+        MouseDown="Window_MouseDown"
+        Background="White"
+        BorderThickness="0"
+        BorderBrush="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip">
     <WrapPanel x:Name="statPanel" Orientation="Vertical" Margin="8,6,0,6">
         <WrapPanel.Resources>
             <Style TargetType="StackPanel">
@@ -41,7 +55,7 @@
     <Window.ContextMenu>
         <ContextMenu>
             <MenuItem Header="_Close" Click="Close_Click"/>
-            <MenuItem Header="_Topmost" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=TopMost, Mode=TwoWay}" Unchecked="TopMost_Unchecked" Checked="TopMost_Checked" StaysOpenOnClick="True"/>
+            <MenuItem x:Name="topMostToggle" Header="_Topmost" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=TopMost, Mode=TwoWay}" StaysOpenOnClick="True"/>
             <MenuItem x:Name="interfaceSelect" Header="_Interface"/>
             <MenuItem Header="_Statistics">
                 <MenuItem Header="_Send" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Send, Mode=TwoWay}" StaysOpenOnClick="True"/>
