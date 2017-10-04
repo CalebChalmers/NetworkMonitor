@@ -22,7 +22,7 @@ using System.Windows.Interop;
 using System.Windows.Media.Animation;
 using System.Net;
 
-namespace NetworkMonitor
+namespace NetworkMonitor.Windows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
