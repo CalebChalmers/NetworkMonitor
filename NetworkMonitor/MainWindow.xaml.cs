@@ -29,14 +29,14 @@ namespace NetworkMonitor
     /// </summary>
     public partial class MainWindow : Window
     {
-        private double updateInterval = 1;
-        private bool closing = false;
+        private const double updateInterval = 1;
+        
         private bool isPinging = false;
         private long prevSent = 0L;
         private long prevReceived = 0L;
 
-        private NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
-        private NetworkInterface selectedInterface;
+        private NetworkInterface[] netInterfaces;
+        private NetworkInterface netInterface;
 
         private DispatcherTimer timer = new DispatcherTimer();
 
@@ -44,65 +44,76 @@ namespace NetworkMonitor
         {
             InitializeComponent();
 
-            if (interfaces.Length == 0)
-                return;
+            netInterfaces = NetworkInterface.GetAllNetworkInterfaces();
 
-            // Initialize selectedInterface and the Interface setting
-            if(Settings.Default.Interface == "")
+            if (netInterfaces.Length == 0)
             {
-                Settings.Default.Interface = interfaces[0].Id;
+                Close();
+                return;
             }
 
-            selectedInterface = GetSelectedInterface();
+            // Initialize the selected interface and the Interface setting
+            if(Settings.Default.Interface == "")
+            {
+                netInterface = netInterfaces[0];
+                Settings.Default.Interface = netInterface.Id;
+            }
+            else
+            {
+                netInterface = GetSelectedInterface();
+            }
 
             // Fill interfaceSelect with interfaces
-            foreach (NetworkInterface ni in interfaces)
+            foreach (NetworkInterface ni in netInterfaces)
             {
                 MenuItem menuItem = new MenuItem();
                 menuItem.Header = ni.Name;
                 menuItem.Tag = ni.Id;
-                menuItem.IsCheckable = true;
-                menuItem.IsChecked = (ni.Id == selectedInterface.Id);
-                menuItem.StaysOpenOnClick = true;
+                menuItem.ToolTip = ni.Description;
+                menuItem.IsChecked = (ni.Id == netInterface.Id);
                 menuItem.Click += InterfaceSelect_Item_Click;
+                menuItem.IsCheckable = true;
+                menuItem.StaysOpenOnClick = true;
 
                 interfaceSelect.Items.Add(menuItem);
             }
 
+            UpdateStats();
 
             // Setup main timer
             timer.Interval = TimeSpan.FromSeconds(updateInterval);
             timer.Tick += Timer_Tick;
-            Timer_Tick(null, null);
             timer.Start();
         }
 
         private void Timer_Tick(object sender, EventArgs args)
         {
+            UpdateStats();
         }
 
+        private void UpdateStats()
         {
             IPv4InterfaceStatistics stats = null;
 
             if (Settings.Default.Stat_Send || Settings.Default.Stat_Receive)
             {
-                stats = selectedInterface.GetIPv4Statistics();
-            }
+                stats = netInterface.GetIPv4Statistics();
 
-            if (Settings.Default.Stat_Send)
-            {
-                long sent = stats.BytesSent * 8;
-                long sendSpeed = (long)((sent - prevSent) * (1.0 / updateInterval));
-                txt_send.Text = GetSpeedText(sendSpeed);
-                prevSent = sent;
-            }
+                if (Settings.Default.Stat_Send)
+                {
+                    long sent = stats.BytesSent * 8;
+                    double sendSpeed = (sent - prevSent) / updateInterval;
+                    txt_send.Text = GetSpeedText(sendSpeed);
+                    prevSent = sent;
+                }
 
-            if (Settings.Default.Stat_Receive)
-            {
-                long received = stats.BytesReceived * 8;
-                long receiveSpeed = (long)((received - prevReceived) * (1.0 / updateInterval));
-                txt_receive.Text = GetSpeedText(receiveSpeed);
-                prevReceived = received;
+                if (Settings.Default.Stat_Receive)
+                {
+                    long received = stats.BytesReceived * 8;
+                    double receiveSpeed = (received - prevReceived) / updateInterval;
+                    txt_receive.Text = GetSpeedText(receiveSpeed);
+                    prevReceived = received;
+                }
             }
 
             if(Settings.Default.Stat_Ping)
@@ -111,7 +122,7 @@ namespace NetworkMonitor
             }
         }
 
-        private string GetSpeedText(decimal bitsPerSecond)
+        private string GetSpeedText(double bitsPerSecond)
         {
             var ordinals = new[] { "", "K", "M", "G", "T", "P", "E" };
             var ordinal = 0;
@@ -146,12 +157,12 @@ namespace NetworkMonitor
             MenuItem clicked = (MenuItem)sender;
             clicked.IsChecked = true;
             Settings.Default.Interface = (string)clicked.Tag;
-            selectedInterface = GetSelectedInterface();
+            netInterface = GetSelectedInterface();
         }
 
         private NetworkInterface GetSelectedInterface()
         {
-            return interfaces.Where(i => i.Id == Settings.Default.Interface).First();
+            return netInterfaces.FirstOrDefault(i => i.Id == Settings.Default.Interface) ?? netInterfaces[0];
         }
 
         private void Ping()
