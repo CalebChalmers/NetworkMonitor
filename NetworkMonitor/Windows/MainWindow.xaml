@@ -15,14 +15,13 @@
         Topmost="{Binding TopMost, Source={x:Static properties:Settings.Default}, Mode=OneWay}"
         ShowInTaskbar="{Binding IsChecked, ElementName=topMostToggle, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"
         Title="Network Monitor"
-        Margin="0"
         MouseDown="Window_MouseDown"
-        Background="White"
-        BorderThickness="0"
-        BorderBrush="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
         WindowStyle="None"
         AllowsTransparency="True"
         ResizeMode="CanResizeWithGrip">
+    <Window.Effect>
+        <BlurEffect Radius="0"/>
+    </Window.Effect>
     <Window.DataContext>
         <viewmodels:MainViewModel/>
     </Window.DataContext>
@@ -92,27 +91,25 @@
             </MenuItem>
         </ContextMenu>
     </Window.ContextMenu>
+    <Window.Resources>
+        <Storyboard x:Key="FadeIn">
+            <DoubleAnimation To="1" Duration="0:0:0.15" Storyboard.TargetProperty="Opacity" />
+            <DoubleAnimation To="0" Duration="0:0:0.15" Storyboard.TargetProperty="Effect.Radius" />
+        </Storyboard>
+        <Storyboard x:Key="FadeOut">
+            <DoubleAnimation To="0.25" Duration="0:0:0.15" Storyboard.TargetProperty="Opacity" />
+            <DoubleAnimation To="4" Duration="0:0:0.15" Storyboard.TargetProperty="Effect.Radius" />
+        </Storyboard>
+    </Window.Resources>
     <Window.Triggers>
         <EventTrigger RoutedEvent="PreviewMouseDown">
-            <BeginStoryboard>
-                <Storyboard>
-                    <DoubleAnimation To="1" Duration="0:0:0.15" Storyboard.TargetProperty="Opacity" />
-                </Storyboard>
-            </BeginStoryboard>            
+            <BeginStoryboard Storyboard="{StaticResource FadeIn}"/>
         </EventTrigger>
         <EventTrigger RoutedEvent="MouseEnter">
-            <BeginStoryboard>
-                <Storyboard>
-                    <DoubleAnimation To="0.25" Duration="0:0:0.15" Storyboard.TargetProperty="Opacity" />
-                </Storyboard>
-            </BeginStoryboard>
+            <BeginStoryboard Storyboard="{StaticResource FadeOut}"/>
         </EventTrigger>
         <EventTrigger RoutedEvent="MouseLeave">
-            <BeginStoryboard>
-                <Storyboard>
-                    <DoubleAnimation To="1" Duration="0:0:0.15" Storyboard.TargetProperty="Opacity" />
-                </Storyboard>
-            </BeginStoryboard>
+            <BeginStoryboard Storyboard="{StaticResource FadeIn}"/>
         </EventTrigger>
     </Window.Triggers>
 </Window>
