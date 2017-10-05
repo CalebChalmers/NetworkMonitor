@@ -187,6 +187,11 @@ namespace NetworkMonitor.ViewModels
                 ordinal++;
             }
 
+            if(bitsPerSecond >= 1000) // Keep to 4 digits
+            {
+                bitsPerSecond = Math.Round(bitsPerSecond);
+            }
+
             return String.Format("{0}{1}", bitsPerSecond.ToString("0.#"), ordinals[ordinal]);
         }
 
