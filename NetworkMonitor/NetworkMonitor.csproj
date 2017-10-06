@@ -87,7 +87,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Messages.cs" />
-    <Compile Include="Xaml\EqualityToBooleanConverter.cs" />
     <Compile Include="Xaml\InverseBooleanConverter.cs" />
     <Compile Include="Settings.cs" />
     <Page Include="Windows\MainWindow.xaml">

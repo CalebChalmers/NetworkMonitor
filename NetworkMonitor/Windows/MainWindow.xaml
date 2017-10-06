@@ -63,30 +63,6 @@
         <ContextMenu>
             <MenuItem Header="_Close" Click="Close_Click"/>
             <MenuItem x:Name="topMostToggle" Header="_Topmost" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=TopMost, Mode=TwoWay}" StaysOpenOnClick="True"/>
-            <MenuItem Header="_Interface" ItemsSource="{Binding NetInterfaces}">
-                <MenuItem.ItemContainerStyle>
-                    <Style TargetType="MenuItem">
-                        <Setter Property="IsCheckable" Value="True"/>
-                        <Setter Property="StaysOpenOnClick" Value="True"/>
-                        <Setter Property="ToolTip" Value="{Binding Description}"/>
-                        <Setter Property="Command" Value="{Binding DataContext.ChangeNetInterface, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"/>
-                        <Setter Property="CommandParameter" Value="{Binding}"/>
-                        <Setter Property="IsChecked">
-                            <Setter.Value>
-                                <MultiBinding Converter="{StaticResource EqualityToBooleanConverter}" Mode="OneWay">
-                                    <Binding Path="DataContext.NetInterface" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Window}}"/>
-                                    <Binding Path="."/>
-                                </MultiBinding>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </MenuItem.ItemContainerStyle>
-                <MenuItem.ItemTemplate>
-                    <DataTemplate DataType="{x:Type netinfo:NetworkInterface}">
-                        <TextBlock Text="{Binding Name}"/>
-                    </DataTemplate>
-                </MenuItem.ItemTemplate>
-            </MenuItem>
             <MenuItem Header="_Statistics">
                 <MenuItem Header="_Send" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Send, Mode=TwoWay}" StaysOpenOnClick="True"/>
                 <MenuItem Header="_Receive" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Receive, Mode=TwoWay}" StaysOpenOnClick="True"/>

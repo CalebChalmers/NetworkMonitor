@@ -22,39 +22,32 @@ namespace NetworkMonitor.ViewModels
         private string _send;
         private string _receive;
         private string _ping;
-        private NetworkInterface _netInterface;
-        private NetworkInterface[] _netInterfaces;
 
         private bool isPinging = false;
         private long prevSent = 0L;
         private long prevReceived = 0L;
-        private DispatcherTimer timer = new DispatcherTimer();
+        private DispatcherTimer timer;
+        private NetworkInterface netInterface = null;
         private Ping pinger;
 
         public MainViewModel()
         {
-            ChangeNetInterface = new RelayCommand<NetworkInterface>(ExecuteChangeNetInterface);
-
-            pinger = new Ping();
-
-            _netInterfaces = NetworkInterface.GetAllNetworkInterfaces();
-            
-            if (NetInterfaces.Length == 0)
+            if (NetworkInterface.GetIsNetworkAvailable())
             {
-                MessengerInstance.Send(new FatalErrorMessage("No network interfaces found."));
+                netInterface = NetworkInterface.GetAllNetworkInterfaces().FirstOrDefault(i =>
+                (i.NetworkInterfaceType == NetworkInterfaceType.Ethernet ||
+                i.NetworkInterfaceType == NetworkInterfaceType.Wireless80211) &&
+                i.OperationalStatus == OperationalStatus.Up);
+            }
+            
+            if (netInterface == null)
+            {
+                MessengerInstance.Send(new FatalErrorMessage("No suitable network interfaces found."));
                 return;
             }
 
-            NetworkInterface ni = NetInterfaces.FirstOrDefault(i => i.Id == Settings.Default.Interface);
-            if (ni == null)
-            {
-                _netInterface = NetInterfaces[0];
-                Settings.Default.Interface = _netInterface.Id;
-            }
-            else
-            {
-                _netInterface = ni;
-            }
+            timer = new DispatcherTimer();
+            pinger = new Ping();
 
             MessengerInstance.Register<ClosingMessage>(this, ClosingMessageReceived);
 
@@ -64,24 +57,6 @@ namespace NetworkMonitor.ViewModels
             timer.Interval = TimeSpan.FromSeconds(UpdateInterval);
             timer.Tick += Timer_Tick;
             timer.Start();
-        }
-
-        public NetworkInterface[] NetInterfaces
-        {
-            get { return _netInterfaces; }
-        }
-
-        public NetworkInterface NetInterface
-        {
-            get { return _netInterface; }
-            set
-            {
-                if (_netInterface != value)
-                {
-                    _netInterface = value;
-                    RaisePropertyChanged();
-                }
-            }
         }
 
         public string Send
@@ -123,14 +98,6 @@ namespace NetworkMonitor.ViewModels
             }
         }
 
-        public ICommand ChangeNetInterface { get; private set; }
-
-        private void ExecuteChangeNetInterface(NetworkInterface netInterface)
-        {
-            NetInterface = netInterface;
-            Settings.Default.Interface = netInterface.Id;
-        }
-
         private void ClosingMessageReceived(ClosingMessage msg)
         {
             pinger.SendAsyncCancel();
@@ -148,7 +115,7 @@ namespace NetworkMonitor.ViewModels
 
             if (Settings.Default.Stat_Send || Settings.Default.Stat_Receive)
             {
-                stats = NetInterface.GetIPv4Statistics();
+                stats = netInterface.GetIPv4Statistics();
 
                 if (Settings.Default.Stat_Send)
                 {
