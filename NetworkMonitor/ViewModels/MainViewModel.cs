@@ -29,16 +29,19 @@ namespace NetworkMonitor.ViewModels
         private long prevSent = 0L;
         private long prevReceived = 0L;
         private DispatcherTimer timer = new DispatcherTimer();
+        private Ping pinger;
 
         public MainViewModel()
         {
             ChangeNetInterface = new RelayCommand<NetworkInterface>(ExecuteChangeNetInterface);
 
+            pinger = new Ping();
+
             _netInterfaces = NetworkInterface.GetAllNetworkInterfaces();
             
             if (NetInterfaces.Length == 0)
             {
-                MessengerInstance.Send("No network interfaces found.", "fatal error");
+                MessengerInstance.Send(new FatalErrorMessage("No network interfaces found."));
                 return;
             }
 
@@ -52,6 +55,8 @@ namespace NetworkMonitor.ViewModels
             {
                 _netInterface = ni;
             }
+
+            MessengerInstance.Register<ClosingMessage>(this, ClosingMessageReceived);
 
             UpdateStats();
 
@@ -126,6 +131,12 @@ namespace NetworkMonitor.ViewModels
             Settings.Default.Interface = netInterface.Id;
         }
 
+        private void ClosingMessageReceived(ClosingMessage msg)
+        {
+            pinger.SendAsyncCancel();
+            timer.Stop();
+        }
+
         private void Timer_Tick(object sender, EventArgs args)
         {
             UpdateStats();
@@ -198,7 +209,6 @@ namespace NetworkMonitor.ViewModels
         private void DoPing()
         {
             if (isPinging) return;
-            Ping pinger = new Ping();
             pinger.PingCompleted += Ping_PingCompleted;
             try
             {

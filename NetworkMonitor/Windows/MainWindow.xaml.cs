@@ -33,12 +33,12 @@ namespace NetworkMonitor.Windows
     {
         public MainWindow()
         {
-            Messenger.Default.Register<string>(this, "fatal error", FatalError);
+            Messenger.Default.Register<FatalErrorMessage>(this, FatalError);
             
             InitializeComponent();
         }
 
-        private void FatalError(string msg)
+        private void FatalError(FatalErrorMessage msg)
         {
             MessageBox.Show("ERROR: " + msg, "Network Monitor", MessageBoxButton.OK, MessageBoxImage.Error);
             Close();
@@ -60,6 +60,11 @@ namespace NetworkMonitor.Windows
             PingWindow window = new PingWindow();
             window.Owner = this;
             window.ShowDialog();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Messenger.Default.Send(new ClosingMessage());
         }
     }
 }
