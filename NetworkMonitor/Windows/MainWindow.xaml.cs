@@ -62,6 +62,13 @@ namespace NetworkMonitor.Windows
             window.ShowDialog();
         }
 
+        private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            AboutWindow window = new AboutWindow();
+            window.Owner = this;
+            window.ShowDialog();
+        }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Messenger.Default.Send(new ClosingMessage());

@@ -72,6 +72,7 @@
                 <MenuItem Header="_Receive" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Receive, Mode=TwoWay}" StaysOpenOnClick="True"/>
                 <MenuItem Header="_Ping..." Click="PingMenuItem_Click"/>
             </MenuItem>
+            <MenuItem Header="_About..." Click="AboutMenuItem_Click"/>
         </ContextMenu>
     </Window.ContextMenu>
     <Window.Resources>

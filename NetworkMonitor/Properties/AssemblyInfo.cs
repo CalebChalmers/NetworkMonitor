@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Caleb Chalmers")]
 [assembly: AssemblyProduct("NetworkMonitor")]
-[assembly: AssemblyCopyright("Copyright © Caleb Chamers 2016")]
+[assembly: AssemblyCopyright("Copyright © Caleb Chamers 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
