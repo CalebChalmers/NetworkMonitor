@@ -7,5 +7,6 @@
     <Application.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <xaml:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+        <xaml:BooleanToOrientationConverter x:Key="BooleanToOrientationConverter" />
     </Application.Resources>
 </Application>

@@ -87,6 +87,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Messages.cs" />
+    <Compile Include="Xaml\BooleanToOrientationConverter.cs" />
     <Compile Include="Xaml\InverseBooleanConverter.cs" />
     <Compile Include="Settings.cs" />
     <Page Include="Windows\MainWindow.xaml">

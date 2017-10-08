@@ -16,7 +16,8 @@
         MouseDown="Window_MouseDown"
         WindowStyle="None"
         AllowsTransparency="True"
-        BorderThickness="1"
+        Background="Transparent"
+        BorderThickness="0"
         BorderBrush="LightGray"
         SizeToContent="WidthAndHeight"
         Closing="Window_Closing"
@@ -24,42 +25,48 @@
     <Window.DataContext>
         <viewmodels:MainViewModel/>
     </Window.DataContext>
-    <StackPanel Orientation="Vertical" Margin="4">
-        <StackPanel.Resources>
-            <Style TargetType="StackPanel">
-                <Setter Property="Orientation" Value="Horizontal"/>
-                <Setter Property="MinWidth" Value="74"/>
-                <Setter Property="MinHeight" Value="19"/>
-            </Style>
-            <Style TargetType="TextBlock" x:Key="IconTextBlockStyle">
-                <Setter Property="Margin" Value="2,0,0,0"/>
-                <Setter Property="Width" Value="14"/>
-                <Setter Property="FontSize" Value="14"/>
-                <Setter Property="TextAlignment" Value="Center"/>
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-            </Style>
-            <Style TargetType="TextBlock" x:Key="InfoTextBlockStyle">
-                <Setter Property="FontSize" Value="14"/>
-                <Setter Property="Margin" Value="6,0"/>
-            </Style>
-        </StackPanel.Resources>
-        <StackPanel ToolTip="Send (bps)" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Send, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <TextBlock Text="▲" Style="{StaticResource IconTextBlockStyle}"/>
-            <TextBlock Text="{Binding Send}" Style="{StaticResource InfoTextBlockStyle}"/>
+    <Border Margin="2" Background="White">
+        <Border.Effect>
+            <DropShadowEffect ShadowDepth="0" Opacity="0.125" BlurRadius="3"/>
+        </Border.Effect>
+        <StackPanel Orientation="{Binding IsChecked, ElementName=horizontalLayoutToggle, Mode=OneWay, Converter={StaticResource BooleanToOrientationConverter}}" Margin="5">
+            <StackPanel.Resources>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Orientation" Value="Horizontal"/>
+                    <Setter Property="MinWidth" Value="73"/>
+                </Style>
+                <Style TargetType="TextBlock" x:Key="IconTextBlockStyle">
+                    <Setter Property="Margin" Value="3,0,6,0"/>
+                    <Setter Property="Width" Value="14"/>
+                    <Setter Property="FontSize" Value="14"/>
+                    <Setter Property="TextAlignment" Value="Center"/>
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                </Style>
+                <Style TargetType="TextBlock" x:Key="InfoTextBlockStyle">
+                    <Setter Property="FontSize" Value="14"/>
+                </Style>
+            </StackPanel.Resources>
+            <StackPanel ToolTip="Send (bps)" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Send, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Text="▲" Style="{StaticResource IconTextBlockStyle}"/>
+                <TextBlock Text="{Binding Send}" Style="{StaticResource InfoTextBlockStyle}"/>
+            </StackPanel>
+            <StackPanel ToolTip="Receive (bps)" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Receive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Text="▼" Style="{StaticResource IconTextBlockStyle}"/>
+                <TextBlock Text="{Binding Receive}" Style="{StaticResource InfoTextBlockStyle}"/>
+            </StackPanel>
+            <StackPanel ToolTip="Ping (ms)" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Ping, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Text="●" Style="{StaticResource IconTextBlockStyle}"/>
+                <TextBlock Text="{Binding Ping}" Style="{StaticResource InfoTextBlockStyle}"/>
+            </StackPanel>
         </StackPanel>
-        <StackPanel ToolTip="Receive (bps)" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Receive, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <TextBlock Text="▼" Style="{StaticResource IconTextBlockStyle}"/>
-            <TextBlock Text="{Binding Receive}" Style="{StaticResource InfoTextBlockStyle}"/>
-        </StackPanel>
-        <StackPanel ToolTip="Ping (ms)" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Ping, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <TextBlock Text="●" Style="{StaticResource IconTextBlockStyle}"/>
-            <TextBlock Text="{Binding Ping}" Style="{StaticResource InfoTextBlockStyle}"/>
-        </StackPanel>
-    </StackPanel>
+    </Border>
     <Window.ContextMenu>
         <ContextMenu>
             <MenuItem Header="_Close" Click="Close_Click"/>
-            <MenuItem x:Name="topMostToggle" Header="_Topmost" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=TopMost, Mode=TwoWay}" StaysOpenOnClick="True"/>
+            <MenuItem Header="_Options">
+                <MenuItem x:Name="topMostToggle" Header="_Topmost" IsCheckable="True" IsChecked="{Binding TopMost, Source={x:Static properties:Settings.Default}, Mode=TwoWay}" StaysOpenOnClick="True"/>
+                <MenuItem x:Name="horizontalLayoutToggle" Header="_Use Horizontal Layout" IsCheckable="True" IsChecked="{Binding UseHorizontalLayout, Source={x:Static properties:Settings.Default}, Mode=TwoWay}" StaysOpenOnClick="True"/>
+            </MenuItem>
             <MenuItem Header="_Statistics">
                 <MenuItem Header="_Send" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Send, Mode=TwoWay}" StaysOpenOnClick="True"/>
                 <MenuItem Header="_Receive" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Receive, Mode=TwoWay}" StaysOpenOnClick="True"/>
