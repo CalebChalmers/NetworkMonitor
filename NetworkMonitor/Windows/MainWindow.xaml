@@ -21,9 +21,6 @@
         SizeToContent="WidthAndHeight"
         Closing="Window_Closing"
         ResizeMode="NoResize">
-    <Window.Effect>
-        <BlurEffect Radius="0"/>
-    </Window.Effect>
     <Window.DataContext>
         <viewmodels:MainViewModel/>
     </Window.DataContext>
@@ -73,11 +70,9 @@
     <Window.Resources>
         <Storyboard x:Key="FadeIn">
             <DoubleAnimation To="1" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity" />
-            <DoubleAnimation To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Effect.Radius" />
         </Storyboard>
         <Storyboard x:Key="FadeOut">
             <DoubleAnimation To="0.4" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity" />
-            <DoubleAnimation To="3" Duration="0:0:0.1" Storyboard.TargetProperty="Effect.Radius" />
         </Storyboard>
     </Window.Resources>
     <Window.Triggers>
