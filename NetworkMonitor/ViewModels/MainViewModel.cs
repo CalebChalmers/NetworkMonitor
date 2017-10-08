@@ -156,21 +156,25 @@ namespace NetworkMonitor.ViewModels
 
         private string GetSpeedText(double bitsPerSecond)
         {
-            var ordinals = new[] { "", "K", "M", "G", "T", "P", "E" };
-            var ordinal = 0;
+            string letter = "";
 
-            while (bitsPerSecond >= 1024)
+            if (bitsPerSecond >= 1e9d) // 10^9
             {
-                bitsPerSecond /= 1024;
-                ordinal++;
+                bitsPerSecond /= 1e9d;
+                letter = "G";
             }
-
-            if(bitsPerSecond >= 1000) // Keep to 4 digits
+            else if (bitsPerSecond >= 1e6d) // 10^6
             {
-                bitsPerSecond = Math.Round(bitsPerSecond);
+                bitsPerSecond /= 1e6d;
+                letter = "M";
             }
-
-            return String.Format("{0}{1}", bitsPerSecond.ToString("0.#"), ordinals[ordinal]);
+            else if(bitsPerSecond >= 1e3d) // 10^3
+            {
+                bitsPerSecond /= 1e3d;
+                letter = "K";
+            }
+            
+            return string.Format("{0:0.0}{1}", bitsPerSecond, letter);
         }
 
         private void DoPing()
