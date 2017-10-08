@@ -76,10 +76,10 @@
     </Window.ContextMenu>
     <Window.Resources>
         <Storyboard x:Key="FadeIn">
-            <DoubleAnimation To="1" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity" />
+            <DoubleAnimation To="1" Duration="0:0:0.05" Storyboard.TargetProperty="Opacity" />
         </Storyboard>
         <Storyboard x:Key="FadeOut">
-            <DoubleAnimation To="0.4" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity" />
+            <DoubleAnimation To="0.4" Duration="0:0:0.05" Storyboard.TargetProperty="Opacity" />
         </Storyboard>
     </Window.Resources>
     <Window.Triggers>
