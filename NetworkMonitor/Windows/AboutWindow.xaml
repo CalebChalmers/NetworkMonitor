@@ -4,19 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NetworkMonitor.Windows"
-        xmlns:viewmodels="clr-namespace:NetworkMonitor.ViewModels"
+        xmlns:helpers="clr-namespace:NetworkMonitor.Helpers"
         mc:Ignorable="d"
         Title="About"
         SizeToContent="Width"
-        Height="160" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
-    <Window.DataContext>
-        <viewmodels:AboutViewModel/>
-    </Window.DataContext>
+        Height="160" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" DataContext="{Binding Source={x:Static helpers:FileVersionHelper.FileVersionInfo}}">
     <DockPanel Margin="5">
-        <Label Content="{Binding Copyright, Mode=OneWay}" VerticalAlignment="Top" HorizontalContentAlignment="Center" FontSize="10" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" DockPanel.Dock="Bottom" />
+        <Label Content="{Binding LegalCopyright, Mode=OneWay}" VerticalAlignment="Top" HorizontalContentAlignment="Center" FontSize="10" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" DockPanel.Dock="Bottom" />
         <StackPanel>
-            <Label Content="Network Monitor" VerticalAlignment="Top" HorizontalContentAlignment="Center" FontSize="22" FontFamily="Segoe UI Semibold" />
-            <Label Content="{Binding Version, Mode=OneWay}" ContentStringFormat="v{0}" VerticalAlignment="Top" HorizontalContentAlignment="Center" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+            <Label Content="{Binding ProductName, Mode=OneWay}" VerticalAlignment="Top" HorizontalContentAlignment="Center" FontSize="22" FontFamily="Segoe UI Semibold" />
+            <Label Content="{Binding FileVersion, Mode=OneWay}" ContentStringFormat="v{0}" VerticalAlignment="Top" HorizontalContentAlignment="Center" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
         </StackPanel>
     </DockPanel>
 </Window>

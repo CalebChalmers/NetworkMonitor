@@ -11,7 +11,7 @@ using System.Windows;
 [assembly: AssemblyDescription("A simple application designed to show you basic network data.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Caleb Chalmers")]
-[assembly: AssemblyProduct("NetworkMonitor")]
+[assembly: AssemblyProduct("Network Monitor")]
 [assembly: AssemblyCopyright("Copyright © Caleb Chamers 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
