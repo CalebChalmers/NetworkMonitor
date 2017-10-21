@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using NetworkMonitor.Helpers;
 using NetworkMonitor.Properties;
 using System;
 using System.Collections.Generic;
@@ -46,6 +47,7 @@ namespace NetworkMonitor.ViewModels
                 return;
             }
 
+            RunOnStartupCommand = new RelayCommand<bool>(ExecuteRunOnStartupCommand);
             timer = new DispatcherTimer();
             pinger = new Ping();
 
@@ -95,6 +97,20 @@ namespace NetworkMonitor.ViewModels
                     _ping = value;
                     RaisePropertyChanged();
                 }
+            }
+        }
+
+        public ICommand RunOnStartupCommand { get; private set; }
+
+        private void ExecuteRunOnStartupCommand(bool runOnStartup)
+        {
+            if(runOnStartup)
+            {
+                RegistryHelper.AddStartupKey();
+            }
+            else
+            {
+                RegistryHelper.RemoveStartupKey();
             }
         }
 

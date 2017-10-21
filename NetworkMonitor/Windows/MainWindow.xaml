@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NetworkMonitor.Windows"
         xmlns:viewmodels="clr-namespace:NetworkMonitor.ViewModels"
-        xmlns:netinfo="clr-namespace:System.Net.NetworkInformation;assembly=System"
+        xmlns:helpers="clr-namespace:NetworkMonitor.Helpers"
         xmlns:properties="clr-namespace:NetworkMonitor.Properties"
         mc:Ignorable="d"
         Top="{Binding Top, Source={x:Static properties:Settings.Default}, Mode=TwoWay}"
@@ -66,6 +66,7 @@
             <MenuItem Header="_Options">
                 <MenuItem x:Name="topMostToggle" Header="_Topmost" IsCheckable="True" IsChecked="{Binding TopMost, Source={x:Static properties:Settings.Default}, Mode=TwoWay}" StaysOpenOnClick="True"/>
                 <MenuItem x:Name="horizontalLayoutToggle" Header="_Use Horizontal Layout" IsCheckable="True" IsChecked="{Binding UseHorizontalLayout, Source={x:Static properties:Settings.Default}, Mode=TwoWay}" StaysOpenOnClick="True"/>
+                <MenuItem Header="_Run on Startup" IsChecked="{Binding Source={x:Static helpers:RegistryHelper.HasStartupKey}, Mode=OneWay}" IsCheckable="True" Command="{Binding RunOnStartupCommand}" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" StaysOpenOnClick="True"/>
             </MenuItem>
             <MenuItem Header="_Statistics">
                 <MenuItem Header="_Send" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Send, Mode=TwoWay}" StaysOpenOnClick="True"/>

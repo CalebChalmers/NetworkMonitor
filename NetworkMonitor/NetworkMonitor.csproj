@@ -79,6 +79,7 @@
     </ApplicationDefinition>
     <Compile Include="Helpers\FileVersionHelper.cs" />
     <Compile Include="Helpers\MessageBoxHelper.cs" />
+    <Compile Include="Helpers\RegistryHelper.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="ViewModels\AboutViewModel.cs" />
     <Compile Include="Windows\AboutWindow.xaml.cs">
