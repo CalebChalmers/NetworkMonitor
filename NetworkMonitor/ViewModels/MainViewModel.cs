@@ -16,8 +16,6 @@ namespace NetworkMonitor.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private const double UpdateInterval = 1;
-        private const int PingTimeout = 3000;
         private const string ErrorText = "----";
         
         private string _send;
@@ -53,10 +51,10 @@ namespace NetworkMonitor.ViewModels
 
             MessengerInstance.Register<ClosingMessage>(this, ClosingMessageReceived);
 
-            UpdateStats();
+            RefreshStats();
 
             // Setup main timer
-            timer.Interval = TimeSpan.FromSeconds(UpdateInterval);
+            timer.Interval = TimeSpan.FromSeconds(Settings.Default.RefreshInterval);
             timer.Tick += Timer_Tick;
             timer.Start();
         }
@@ -122,10 +120,10 @@ namespace NetworkMonitor.ViewModels
 
         private void Timer_Tick(object sender, EventArgs args)
         {
-            UpdateStats();
+            RefreshStats();
         }
 
-        private void UpdateStats()
+        private void RefreshStats()
         {
             IPv4InterfaceStatistics stats = null;
 
@@ -138,7 +136,7 @@ namespace NetworkMonitor.ViewModels
                     if(stats.BytesReceived > 0)
                     {
                         long sent = stats.BytesSent * 8;
-                        double sendSpeed = (sent - prevSent) / UpdateInterval;
+                        double sendSpeed = (sent - prevSent) / Settings.Default.RefreshInterval;
                         Send = GetSpeedText(sendSpeed);
                         prevSent = sent;
                     }
@@ -153,7 +151,7 @@ namespace NetworkMonitor.ViewModels
                     if (stats.BytesReceived > 0)
                     {
                         long received = stats.BytesReceived * 8;
-                        double receiveSpeed = (received - prevReceived) / UpdateInterval;
+                        double receiveSpeed = (received - prevReceived) / Settings.Default.RefreshInterval;
                         Receive = GetSpeedText(receiveSpeed);
                         prevReceived = received;
                     }
@@ -200,7 +198,7 @@ namespace NetworkMonitor.ViewModels
             try
             {
                 isPinging = true;
-                pinger.SendAsync(Settings.Default.PingAddress, PingTimeout, null);
+                pinger.SendAsync(Settings.Default.PingAddress, Settings.Default.PingTimeout, null);
             }
             catch (PingException)
             {

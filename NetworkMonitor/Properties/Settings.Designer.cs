@@ -130,5 +130,29 @@ namespace NetworkMonitor.Properties {
                 this["UseHorizontalLayout"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3000")]
+        public int PingTimeout {
+            get {
+                return ((int)(this["PingTimeout"]));
+            }
+            set {
+                this["PingTimeout"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public double RefreshInterval {
+            get {
+                return ((double)(this["RefreshInterval"]));
+            }
+            set {
+                this["RefreshInterval"] = value;
+            }
+        }
     }
 }
