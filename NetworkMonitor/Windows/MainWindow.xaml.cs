@@ -23,6 +23,7 @@ using System.Windows.Media.Animation;
 using System.Net;
 using GalaSoft.MvvmLight.Messaging;
 using NetworkMonitor.ViewModels;
+using NetworkMonitor.Helpers;
 
 namespace NetworkMonitor.Windows
 {
@@ -40,7 +41,7 @@ namespace NetworkMonitor.Windows
 
         private void FatalError(FatalErrorMessage msg)
         {
-            MessageBox.Show("ERROR: " + msg, "Network Monitor", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBoxHelper.Error(msg.Message);
             Close();
         }
 
