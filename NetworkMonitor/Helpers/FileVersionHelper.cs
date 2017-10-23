@@ -23,5 +23,13 @@ namespace NetworkMonitor.Helpers
                 return _fileVersionInfo;
             }
         }
+
+        public static string AppName
+        {
+            get
+            {
+                return FileVersionInfo.ProductName;
+            }
+        }
     }
 }

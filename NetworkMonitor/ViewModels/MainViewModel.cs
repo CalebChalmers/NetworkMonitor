@@ -46,6 +46,7 @@ namespace NetworkMonitor.ViewModels
             }
 
             RunOnStartupCommand = new RelayCommand<bool>(ExecuteRunOnStartupCommand);
+            CheckForUpdateCommand = new RelayCommand(ExecuteCheckForUpdateCommand);
             timer = new DispatcherTimer();
             pinger = new Ping();
 
@@ -99,6 +100,7 @@ namespace NetworkMonitor.ViewModels
         }
 
         public ICommand RunOnStartupCommand { get; private set; }
+        public ICommand CheckForUpdateCommand { get; private set; }
 
         private void ExecuteRunOnStartupCommand(bool runOnStartup)
         {
@@ -109,6 +111,21 @@ namespace NetworkMonitor.ViewModels
             else
             {
                 RegistryHelper.RemoveStartupKey();
+            }
+        }
+
+        private async void ExecuteCheckForUpdateCommand()
+        {
+            using (var mgr = await UpdateHelper.GetUpdateManager())
+            {
+                if (mgr != null)
+                {
+                    await UpdateHelper.UpdateApp(mgr, true);
+                }
+                else
+                {
+                    MessageBoxHelper.Error("There was a problem checking for updates.");
+                }
             }
         }
 

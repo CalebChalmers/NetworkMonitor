@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NetworkMonitor.Windows"
         xmlns:viewmodels="clr-namespace:NetworkMonitor.ViewModels"
-        xmlns:helpers="clr-namespace:NetworkMonitor.Helpers"
         xmlns:properties="clr-namespace:NetworkMonitor.Properties"
+        xmlns:helpers="clr-namespace:NetworkMonitor.Helpers"
         mc:Ignorable="d"
         Top="{Binding Top, Source={x:Static properties:Settings.Default}, Mode=TwoWay}"
         Left="{Binding Left, Source={x:Static properties:Settings.Default}, Mode=TwoWay}"
@@ -73,7 +73,10 @@
                 <MenuItem Header="_Receive" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=Stat_Receive, Mode=TwoWay}" StaysOpenOnClick="True"/>
                 <MenuItem Header="_Ping..." Click="PingMenuItem_Click"/>
             </MenuItem>
-            <MenuItem Header="_About..." Click="AboutMenuItem_Click"/>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_Check for Update..." Command="{Binding CheckForUpdateCommand}"/>
+                <MenuItem Header="_About..." Click="AboutMenuItem_Click"/>
+            </MenuItem>
         </ContextMenu>
     </Window.ContextMenu>
     <Window.Resources>
