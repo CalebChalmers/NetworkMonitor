@@ -51,6 +51,8 @@ namespace NetworkMonitor
 
         private static void OnAppInitialInstall(Version version, UpdateManager mgr)
         {
+            MessageBoxHelper.Info("Install successful.");
+
             mgr.CreateShortcutsForExecutable(FileVersionHelper.AppName, ShortcutLocations, false);
             mgr.CreateUninstallerRegistryEntry();
         }
