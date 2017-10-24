@@ -42,6 +42,7 @@ namespace NetworkMonitor
                     await UpdateHelper.UpdateApp(mgr);
                 }
             }
+            new MainWindow().Show();
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)

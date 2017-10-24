@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:NetworkMonitor"
              xmlns:xaml="clr-namespace:NetworkMonitor.Xaml"
-             StartupUri="Windows/MainWindow.xaml" Startup="Application_Startup" Exit="Application_Exit">
+             Startup="Application_Startup" Exit="Application_Exit">
     <Application.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <xaml:InverseBooleanConverter x:Key="InverseBooleanConverter" />
