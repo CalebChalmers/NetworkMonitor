@@ -49,11 +49,14 @@ namespace NetworkMonitor
             Settings.Default.Save();
         }
 
-        private static void OnAppInitialInstall(Version version, UpdateManager mgr)
+        private static void OnFirstRun()
         {
             MessageBoxHelper.Info("Install successful.");
+        }
 
-            mgr.CreateShortcutsForExecutable(FileVersionHelper.AppName, ShortcutLocations, false);
+        private static void OnAppInitialInstall(Version version, UpdateManager mgr)
+        {
+            mgr.CreateShortcutsForExecutable(FileVersionHelper.AppFileName, ShortcutLocations, false);
             mgr.CreateUninstallerRegistryEntry();
         }
 
@@ -72,7 +75,7 @@ namespace NetworkMonitor
 
         private static void OnAppUninstall(Version version, UpdateManager mgr)
         {
-            mgr.RemoveShortcutsForExecutable(FileVersionHelper.AppName, ShortcutLocations);
+            mgr.RemoveShortcutsForExecutable(FileVersionHelper.AppFileName, ShortcutLocations);
             mgr.RemoveUninstallerRegistryEntry();
 
             RegistryHelper.RemoveStartupKey();

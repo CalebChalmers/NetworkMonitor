@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -18,7 +19,7 @@ namespace NetworkMonitor.Helpers
             {
                 if(_fileVersionInfo == null)
                 {
-                    _fileVersionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location);
+                    _fileVersionInfo = FileVersionInfo.GetVersionInfo(AppFilePath);
                 }
                 return _fileVersionInfo;
             }
@@ -29,6 +30,22 @@ namespace NetworkMonitor.Helpers
             get
             {
                 return FileVersionInfo.ProductName;
+            }
+        }
+
+        public static string AppFileName
+        {
+            get
+            {
+                return Path.GetFileName(AppFilePath);
+            }
+        }
+
+        public static string AppFilePath
+        {
+            get
+            {
+                return Assembly.GetEntryAssembly().Location;
             }
         }
     }
