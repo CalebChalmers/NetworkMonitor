@@ -63,8 +63,6 @@ namespace NetworkMonitor
 
         private static void OnAppUpdate(Version version, UpdateManager mgr)
         {
-            MessageBoxHelper.Info(string.Format("New version (v{0}) installed.", version));
-
             mgr.CreateShortcutsForExecutable(FileVersionHelper.AppName, ShortcutLocations, true);
             mgr.CreateUninstallerRegistryEntry();
 
@@ -72,6 +70,8 @@ namespace NetworkMonitor
             {
                 RegistryHelper.AddStartupKey();
             }
+
+            MessageBoxHelper.Info(string.Format("New version (v{0}) installed.", FileVersionHelper.FileVersionInfo.ProductVersion));
         }
 
         private static void OnAppUninstall(Version version, UpdateManager mgr)
@@ -80,6 +80,8 @@ namespace NetworkMonitor
             mgr.RemoveUninstallerRegistryEntry();
 
             RegistryHelper.RemoveStartupKey();
+
+            MessageBoxHelper.Info("Uninstall successful.");
         }
     }
 }
