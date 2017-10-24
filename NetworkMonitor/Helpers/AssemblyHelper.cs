@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace NetworkMonitor.Helpers
 {
-    public static class FileVersionHelper
+    public static class AssemblyHelper
     {
         public static FileVersionInfo _fileVersionInfo = null;
 

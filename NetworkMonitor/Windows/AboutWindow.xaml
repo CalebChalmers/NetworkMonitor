@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="About"
         SizeToContent="Width"
-        Height="160" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" DataContext="{Binding Source={x:Static helpers:FileVersionHelper.FileVersionInfo}}">
+        Height="160" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" DataContext="{Binding Source={x:Static helpers:AssemblyHelper.FileVersionInfo}}">
     <DockPanel Margin="5">
         <Label Content="{Binding LegalCopyright, Mode=OneWay}" VerticalAlignment="Top" HorizontalContentAlignment="Center" FontSize="10" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" DockPanel.Dock="Bottom" />
         <StackPanel>
