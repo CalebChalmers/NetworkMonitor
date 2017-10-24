@@ -63,8 +63,8 @@ namespace NetworkMonitor
 
         private static void OnAppUpdate(Version version, UpdateManager mgr)
         {
-            mgr.CreateShortcutsForExecutable(FileVersionHelper.AppName, ShortcutLocations, true);
-            mgr.CreateUninstallerRegistryEntry();
+            //mgr.CreateShortcutsForExecutable(FileVersionHelper.AppFileName, ShortcutLocations, true);
+            //mgr.CreateUninstallerRegistryEntry();
 
             if (RegistryHelper.HasStartupKey)
             {
