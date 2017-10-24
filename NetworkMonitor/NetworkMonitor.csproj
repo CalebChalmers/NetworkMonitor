@@ -113,8 +113,8 @@
     <Compile Include="Helpers\FileVersionHelper.cs" />
     <Compile Include="Helpers\MessageBoxHelper.cs" />
     <Compile Include="Helpers\RegistryHelper.cs" />
-    <Compile Include="Messages.cs" />
     <Compile Include="Helpers\UpdateHelper.cs" />
+    <Compile Include="Messages.cs" />
     <Compile Include="Windows\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
@@ -190,11 +190,15 @@
     <Resource Include="Resources\Icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
+  </Target>-->
+  <Target Name="AfterBuild" Condition="'$(Configuration)' == 'Release'">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="asmblyInfo" />
+    </GetAssemblyIdentity>
+    <Exec Command="nuget pack NetworkMonitor.nuspec -Version %(asmblyInfo.Version) -properties Configuration=Release;id=$(MSBuildProjectName) -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
+    <Exec Command="squirrel --releasify $(OutDir)NetworkMonitor.$([System.Version]::Parse(%(asmblyInfo.Version)).ToString(3)).nupkg" />
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
