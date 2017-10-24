@@ -11,41 +11,44 @@ namespace NetworkMonitor.Helpers
 {
     public static class UpdateHelper
     {
-        public static async Task<UpdateManager> GetUpdateManager()
+        public static async Task UpdateApp(bool notify = false)
         {
+#if !DEBUG
             try
             {
-                return await UpdateManager.GitHubUpdateManager(Settings.Default.UpdateURL, prerelease: Settings.Default.UsePreReleases);
+                using (UpdateManager mgr = await UpdateManager.GitHubUpdateManager(Settings.Default.UpdateURL, prerelease: Settings.Default.UsePreReleases))
+                {
+                    UpdateInfo updates = await mgr.CheckForUpdate();
+                    if (updates.ReleasesToApply.Count > 0)
+                    {
+                        ReleaseEntry lastVersion = updates.ReleasesToApply.OrderBy(x => x.Version).Last();
+
+                        if (MessageBoxHelper.Ask(
+                            string.Format("An update is available (v{0}). Would you like to install it?", lastVersion.Version)
+                            ) == true)
+                        {
+                            await mgr.DownloadReleases(new[] { lastVersion });
+                            await mgr.ApplyReleases(updates);
+                            //UpdateManager.RestartApp();
+                        }
+                    }
+                    else if (notify)
+                    {
+                        MessageBoxHelper.Info("No updates found.");
+                    }
+                }
             }
             catch (InvalidOperationException e)
             {
                 Debug.WriteLine("No releases found!");
                 Debug.WriteLine(e);
-            }
 
-            return null;
-        }
-
-        public static async Task UpdateApp(UpdateManager mgr, bool notify = false)
-        {
-            UpdateInfo updates = await mgr.CheckForUpdate();
-            if (updates.ReleasesToApply.Count > 0)
-            {
-                ReleaseEntry lastVersion = updates.ReleasesToApply.OrderBy(x => x.Version).Last();
-
-                if (MessageBoxHelper.Ask(
-                    string.Format("An update is available (v{0}). Would you like to install it?", lastVersion.Version)
-                    ) == true)
+                if (notify)
                 {
-                    await mgr.DownloadReleases(new[] { lastVersion });
-                    await mgr.ApplyReleases(updates);
-                    UpdateManager.RestartApp();
+                    MessageBoxHelper.Error("There was a problem checking for updates.");
                 }
             }
-            else if (notify)
-            {
-                MessageBoxHelper.Info("No updates found.");
-            }
+#endif
         }
     }
 }

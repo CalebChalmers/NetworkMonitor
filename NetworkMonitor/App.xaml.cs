@@ -11,6 +11,7 @@ using NetworkMonitor.Properties;
 using Squirrel;
 using System.Diagnostics;
 using NetworkMonitor.Helpers;
+using NetworkMonitor.Windows;
 
 namespace NetworkMonitor
 {
@@ -21,27 +22,25 @@ namespace NetworkMonitor
     {
         private const ShortcutLocation ShortcutLocations = ShortcutLocation.StartMenu;
 
-        private async void Application_Startup(object sender, StartupEventArgs e)
+        private void Application_Startup(object sender, StartupEventArgs e)
         {
-            if(Settings.Default.UpgradeRequired)
+#if !DEBUG
+            using (UpdateManager mgr = new UpdateManager(""))
+            {
+                SquirrelAwareApp.HandleEvents(                    
+                    onFirstRun: OnFirstRun,
+                    onInitialInstall: (v) => OnAppInitialInstall(v, mgr),
+                    onAppUpdate: (v) => OnAppUpdate(v, mgr),
+                    onAppUninstall: (v) => OnAppUninstall(v, mgr));
+            }
+#endif
+            if (Settings.Default.UpgradeRequired)
             {
                 Settings.Default.Upgrade();
                 Settings.Default.UpgradeRequired = false;
                 Settings.Default.Save();
             }
 
-            using (UpdateManager mgr = await UpdateHelper.GetUpdateManager())
-            {
-                if(mgr != null)
-                {
-                    SquirrelAwareApp.HandleEvents(
-                        onInitialInstall: (v) => OnAppInitialInstall(v, mgr),
-                        onAppUpdate: (v) => OnAppUpdate(v, mgr),
-                        onAppUninstall: (v) => OnAppUninstall(v, mgr));
-
-                    await UpdateHelper.UpdateApp(mgr);
-                }
-            }
             new MainWindow().Show();
         }
 

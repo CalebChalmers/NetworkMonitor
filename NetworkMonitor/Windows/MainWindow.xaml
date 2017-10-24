@@ -21,7 +21,8 @@
         BorderBrush="LightGray"
         SizeToContent="WidthAndHeight"
         Closing="Window_Closing"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        Loaded="Window_Loaded">
     <Window.DataContext>
         <viewmodels:MainViewModel/>
     </Window.DataContext>

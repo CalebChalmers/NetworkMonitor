@@ -116,17 +116,7 @@ namespace NetworkMonitor.ViewModels
 
         private async void ExecuteCheckForUpdateCommand()
         {
-            using (var mgr = await UpdateHelper.GetUpdateManager())
-            {
-                if (mgr != null)
-                {
-                    await UpdateHelper.UpdateApp(mgr, true);
-                }
-                else
-                {
-                    MessageBoxHelper.Error("There was a problem checking for updates.");
-                }
-            }
+            await UpdateHelper.UpdateApp(true);
         }
 
         private void ClosingMessageReceived(ClosingMessage msg)
