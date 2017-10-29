@@ -18,7 +18,6 @@ namespace NetworkMonitor.Helpers
 
         public static async Task UpdateApp(bool notify = false)
         {
-#if !DEBUG
             try
             {
                 using (UpdateManager mgr = await UpdateManager.GitHubUpdateManager(Settings.Default.UpdateURL, prerelease: Settings.Default.UsePreReleases))
@@ -37,21 +36,21 @@ namespace NetworkMonitor.Helpers
                             BackupSettings();
                             UpdateManager.RestartApp();
                         }
-                    }
-                    else if (notify)
-                    {
-                        MessageBoxHelper.Info("No updates found.");
+                        return;
                     }
                 }
             }
-            catch (InvalidOperationException e)
+            catch (InvalidOperationException)
+            {
+
+            }
+            finally
             {
                 if (notify)
                 {
-                    MessageBoxHelper.Error("There was a problem checking for updates.");
+                    MessageBoxHelper.Info("No updates found.");
                 }
             }
-#endif
         }
         
         public static void BackupSettings()
