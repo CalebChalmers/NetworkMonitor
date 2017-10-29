@@ -13,7 +13,7 @@
         <Label Content="{Binding LegalCopyright, Mode=OneWay}" VerticalAlignment="Top" HorizontalContentAlignment="Center" FontSize="10" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" DockPanel.Dock="Bottom" />
         <StackPanel>
             <Label Content="{Binding ProductName, Mode=OneWay}" VerticalAlignment="Top" HorizontalContentAlignment="Center" FontSize="22" FontFamily="Segoe UI Semibold" />
-            <Label Content="{Binding ProductVersion, Mode=OneWay}" ContentStringFormat="v{0}" VerticalAlignment="Top" HorizontalContentAlignment="Center" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+            <Label Content="{Binding FileVersion, Mode=OneWay}" ContentStringFormat="v{0}" VerticalAlignment="Top" HorizontalContentAlignment="Center" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
         </StackPanel>
     </DockPanel>
 </Window>
