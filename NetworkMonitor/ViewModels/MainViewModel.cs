@@ -46,6 +46,7 @@ namespace NetworkMonitor.ViewModels
             }
 
             RunOnStartupCommand = new RelayCommand<bool>(ExecuteRunOnStartupCommand);
+            CheckForUpdateCommand = new RelayCommand(ExecuteCheckForUpdateCommand);
             timer = new DispatcherTimer();
             pinger = new Ping();
 
@@ -99,6 +100,7 @@ namespace NetworkMonitor.ViewModels
         }
 
         public ICommand RunOnStartupCommand { get; private set; }
+        public ICommand CheckForUpdateCommand { get; private set; }
 
         private void ExecuteRunOnStartupCommand(bool runOnStartup)
         {
@@ -110,6 +112,11 @@ namespace NetworkMonitor.ViewModels
             {
                 RegistryHelper.RemoveStartupKey();
             }
+        }
+
+        private async void ExecuteCheckForUpdateCommand()
+        {
+            await UpdateHelper.UpdateApp(true);
         }
 
         private void ClosingMessageReceived(ClosingMessage msg)

@@ -109,18 +109,6 @@ namespace NetworkMonitor.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool UpgradeRequired {
-            get {
-                return ((bool)(this["UpgradeRequired"]));
-            }
-            set {
-                this["UpgradeRequired"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool UseHorizontalLayout {
             get {
@@ -128,6 +116,18 @@ namespace NetworkMonitor.Properties {
             }
             set {
                 this["UseHorizontalLayout"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://github.com/CalebChalmers/NetworkMonitor")]
+        public string UpdateURL {
+            get {
+                return ((string)(this["UpdateURL"]));
+            }
+            set {
+                this["UpdateURL"] = value;
             }
         }
         
@@ -152,6 +152,18 @@ namespace NetworkMonitor.Properties {
             }
             set {
                 this["RefreshInterval"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UsePreReleases {
+            get {
+                return ((bool)(this["UsePreReleases"]));
+            }
+            set {
+                this["UsePreReleases"] = value;
             }
         }
     }

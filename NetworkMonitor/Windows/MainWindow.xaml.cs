@@ -45,6 +45,11 @@ namespace NetworkMonitor.Windows
             Close();
         }
 
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            await UpdateHelper.UpdateApp();
+        }
+
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)

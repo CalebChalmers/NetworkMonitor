@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>$id$</id>
+    <version>0.0.0</version>
+    <title>Network Monitor</title>
+    <authors>Caleb Chalmers</authors>
+    <description>$id$</description>
+  </metadata>
+  <files>
+    <file src="*.*" target="lib\net45\" exclude="*.pdb;*.vshost.*;*.xml;*.nupkg"></file>
+  </files>
+</package>

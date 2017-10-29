@@ -11,7 +11,7 @@ namespace NetworkMonitor.Helpers
     {
         public static bool? Show(string message, MessageBoxButton button = MessageBoxButton.OK, MessageBoxImage icon = MessageBoxImage.None)
         {
-            MessageBoxResult result = MessageBox.Show(message, FileVersionHelper.FileVersionInfo.ProductName, button, icon);
+            MessageBoxResult result = MessageBox.Show(message, AssemblyHelper.AppName, button, icon);
 
             switch(result)
             {
