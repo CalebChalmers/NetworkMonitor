@@ -34,11 +34,10 @@ namespace NetworkMonitor
                     onAppUninstall: (v) => OnAppUninstall(v, mgr));
             }
 #endif
-            if (Settings.Default.UpgradeRequired)
+
+            if(!UpdateHelper.RestoreSettings())
             {
-                Settings.Default.Upgrade();
-                Settings.Default.UpgradeRequired = false;
-                Settings.Default.Save();
+                MessageBoxHelper.Error("There was an error restoring settings.");
             }
 
             new MainWindow().Show();
